@@ -55,9 +55,8 @@ if not exist "%~dp0frontend\.next\BUILD_ID" (
 )
 
 :: ── 设置 API Key ──
-:: ── 填写你的 API Key ──
-:: 从 DeepSeek 控制台获取: https://platform.deepseek.com/api_keys
-set DEEPSEEK_API_KEY=YOUR_DEEPSEEK_API_KEY
+:: 从 https://platform.deepseek.com/api_keys 获取
+set DEEPSEEK_API_KEY=sk-6b1b2e51bc284d2c8b2b419cb6dcc619
 set LLM_MODEL=deepseek/deepseek-chat
 set APP_HOST=127.0.0.1
 
@@ -102,20 +101,22 @@ goto wait_frontend
 :frontend_ready
 echo [..] 前端就绪 ✓
 
-:: ── 启动 Cloudflare 隧道（新窗口） ──
-echo.
-echo ============================================
-echo  正在新窗口中启动 Cloudflare 隧道...
-echo  请查看新窗口中的 URL
-echo ============================================
-start "petcare-tunnel" /MIN cmd /c "cloudflared.exe tunnel --url http://127.0.0.1:3000 --logfile tunnel.log & pause"
+:: ── 启动 Cloudflare 隧道（如果存在 cloudflared.exe） ──
+if exist cloudflared.exe (
+    echo.
+    echo ============================================
+    echo  正在新窗口中启动 Cloudflare 隧道...
+    echo  请查看新窗口中的 URL
+    echo ============================================
+    start "petcare-tunnel" /MIN cmd /c "cloudflared.exe tunnel --url http://127.0.0.1:3000 --edge-ip-version 4 --logfile tunnel.log & pause"
+)
 
 echo.
 echo ============================================
 echo  系统启动完毕！
 echo.
 echo  本地访问:   http://localhost:3000
-echo  访问密码:   YOUR_PASSWORD
+echo  访问密码:   leilingbio888
 echo.
 echo  隧道窗口:   查看 "宠可灵 - Cloudflare 隧道" 窗口获取公网 URL
 echo ============================================

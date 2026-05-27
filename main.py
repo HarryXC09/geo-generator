@@ -18,7 +18,7 @@ from typing import AsyncGenerator
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from litellm import acompletion
+from litellm import acompletion, APIError as LiteLLMAPIError
 from pydantic import BaseModel, Field, field_validator
 from knowledge_base import PETCARE_PRODUCTS, get_product_context
 from tenacity import (
@@ -249,7 +249,7 @@ class LLMTimeoutError(Exception):
     stop=stop_after_attempt(settings.LLM_RETRY_ATTEMPTS),
     wait=wait_exponential(multiplier=1, min=2, max=15),
     retry=retry_if_exception_type(
-        (TimeoutError, ConnectionError, LLMTimeoutError)
+        (TimeoutError, ConnectionError, LLMTimeoutError, LiteLLMAPIError)
     ),
     before_sleep=lambda retry_state: logger.warning(
         "LLM 调用第 %d 次失败 (%s)，%.0fs 后重试...",
@@ -354,8 +354,12 @@ async def generate_copies_sse(
                 "request_id": request_id,
             })
 
-    # 启动所有 worker
-    worker_tasks = [asyncio.create_task(worker(angle)) for angle in ANGLES]
+    # 启动所有 worker（错开 0.5 秒启动，避免同时触发限流）
+    worker_tasks = []
+    for i, angle in enumerate(ANGLES):
+        worker_tasks.append(asyncio.create_task(worker(angle)))
+        if i < len(ANGLES) - 1:
+            await asyncio.sleep(0.5)
 
     async def monitor() -> None:
         """等待所有任务完成，然后发送 sentinel"""

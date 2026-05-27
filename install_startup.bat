@@ -24,7 +24,7 @@ echo cd /d "%~dp0"
 echo taskkill /f /im python.exe ^>nul 2^>^>nul
 echo taskkill /f /im node.exe ^>nul 2^>^>nul
 echo.
-echo set DEEPSEEK_API_KEY=YOUR_DEEPSEEK_API_KEY
+echo set DEEPSEEK_API_KEY=sk-6b1b2e51bc284d2c8b2b419cb6dcc619
 echo set LLM_MODEL=deepseek/deepseek-chat
 echo set APP_HOST=127.0.0.1
 echo.

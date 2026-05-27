@@ -22,14 +22,9 @@
 
 ### 2. 配置 API Key
 
-编辑根目录 `.env` 文件（可参考 `.env.example`）：
+编辑 `start.bat`，找到 `YOUR_DEEPSEEK_API_KEY` 替换为你的真实 Key（从 [platform.deepseek.com](https://platform.deepseek.com/api_keys) 获取）。
 
-```env
-DEEPSEEK_API_KEY=sk-your-api-key-here
-LLM_MODEL=deepseek/deepseek-chat
-```
-
-编辑 `frontend/.env` 文件（可参考 `frontend/.env.example`）：
+编辑 `frontend/.env`（参考 `frontend/.env.example`）：
 
 ```env
 AUTH_PASSWORD=your-password
@@ -38,17 +33,18 @@ AUTH_TOKEN=your-token
 
 ### 3. 一键启动
 
-Windows 下双击 **`start_lan.bat`**，自动完成：
+Windows 下双击 **`start.bat`**，自动完成：
 1. 安装 Python 依赖
 2. 安装前端依赖并构建
 3. 启动后端服务 (127.0.0.1:8000)
 4. 启动前端服务 (0.0.0.0:3000)
+5. （如存在 cloudflared.exe）自动启动公网隧道
 
 启动后访问 `http://localhost:3000`，输入密码登录即可。
 
 ### 4. 公网访问
 
-启动 `start_lan.bat` 后，再双击 **`start_tunnel.bat`**，会通过 Cloudflare 快速隧道生成一个公网 HTTPS 地址，可直接分享给他人使用。
+双击 **`start_tunnel.bat`**（或 start.bat 会自动检测并启动），通过 Cloudflare 快速隧道生成一个公网 HTTPS 地址，可直接分享给他人使用。
 
 ### 5. 开机自启（可选）
 
@@ -60,9 +56,8 @@ Windows 下双击 **`start_lan.bat`**，自动完成：
 ├── main.py                    # FastAPI 后端入口
 ├── knowledge_base.py          # RAG 产品知识库
 ├── requirements.txt           # Python 依赖
-├── start_lan.bat              # 局域网启动脚本
-├── start_tunnel.bat           # Cloudflare 隧道启动
-├── start.bat                  # 一键启动（含隧道）
+├── start.bat                  # 一键启动（后端+前端+隧道）
+├── start_tunnel.bat           # Cloudflare 隧道启动（单独）
 ├── install_startup.bat        # 安装开机自启
 ├── remove_startup.bat         # 卸载开机自启
 ├── stop.bat                   # 停止所有服务

@@ -38,7 +38,7 @@ echo  请勿关闭此窗口 — URL 会显示在下方
 echo.
 echo ============================================
 
-cloudflared.exe tunnel --url http://127.0.0.1:3000 --logfile tunnel.log
+cloudflared.exe tunnel --url http://127.0.0.1:3000 --edge-ip-version 4 --logfile tunnel.log
 
 echo.
 echo 隧道已关闭。
